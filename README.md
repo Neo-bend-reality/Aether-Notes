@@ -1,3 +1,21 @@
 # Aether Notes
-A small python based notes app (backend). Uses a sqlite3 backend and a flask server.
-**Note** : Make sure you run `pip install flask` before cloning this repo.
+
+A small Python note-taking project using SQLite.
+
+## Features
+- Add and store notes with titles and content
+- Pinned and trashed flags for notes
+- Tracks creation and modification timestamps
+- SQLite database backend (`notes.db`)
+
+## Usage
+Run the Python script:
+
+```bash
+python main.py
+```
+
+## Dependencies
+Run
+```bash
+pip install flask

@@ -17,6 +17,12 @@ class Database :
                          modified_at TEXT DEFAULT CURRENT_TIMESTAMP
                          )
                         """)
+            
+    def add_note (self, title, content, pinned, trashed, created_at, modified_at) -> int :
+        with self.editor () as cur :
+            cur.execute ("""INSERT INTO notes title, content, pinned, trashed, created_at, modified_at
+                         VALUES (?, ?, ?, ?, ?, ?)""", (title, content, pinned, trashed, created_at, modified_at))
+            return cur.lastrowid
 
     @contextmanager
     def editor (self) -> Generator [Cursor, Any, Any] :
