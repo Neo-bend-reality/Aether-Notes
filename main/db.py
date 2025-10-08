@@ -1,6 +1,7 @@
 from sqlite3 import connect, Row, Cursor
 from typing import Optional, Union, Any, Generator
 from contextlib import contextmanager
+from datetime import datetime
 
 class Database :
     def __init__ (self) :
@@ -39,6 +40,17 @@ class Database :
             cur.execute ("SELECT * FROM notes WHERE content LIKE ? ORDER BY pinned DESC, created_at DESC LIMIT ? OFFSET ?",
                          (f"%{keyword}%", per_page, (page - 1) * per_page))
             return cur.fetchall ()
+        
+    def update_note (self, note_id, title : Optional [str], content : Optional [str], pinned : Optional [int]) :
+        with self.editor () as cur :
+            args = []
+            if title is not None : args.append ("title = ?")
+            if content is not None : args.append ("content = ?")
+            if pinned is not None : args.append ("pinned = ?")
+
+            values = [arg for arg in [title, content, pinned] if arg is not None]
+            now = datetime.now ().isoformat ()
+            cur.execute (f"UPDATE notes SET {', '.join (args)}, modified_at = ? WHERE id = ?", tuple (values) + (now, note_id))
  
     @contextmanager
     def editor (self) -> Generator [Cursor, Any, Any] :
