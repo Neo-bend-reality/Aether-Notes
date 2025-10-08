@@ -51,6 +51,10 @@ class Database :
             values = [arg for arg in [title, content, pinned] if arg is not None]
             now = datetime.now ().isoformat ()
             cur.execute (f"UPDATE notes SET {', '.join (args)}, modified_at = ? WHERE id = ?", tuple (values) + (now, note_id))
+
+    def toggle_pin (self, note_id, pinned : bool) :
+        with self.editor () as cur :
+            cur.execute ("UPDATE notes SET pinned = ? WHERE id = ?", (1 if pinned else 0, note_id))
  
     @contextmanager
     def editor (self) -> Generator [Cursor, Any, Any] :
