@@ -23,10 +23,21 @@ class Database :
             cur.execute ("""INSERT INTO notes title, content, pinned, trashed, created_at, modified_at
                          VALUES (?, ?, ?, ?, ?, ?)""", (title, content, pinned, trashed, created_at, modified_at))
             return cur.lastrowid
+        
+    def all_notes (self, page, per_page) :
+        with self.editor () as cur :
+            cur.execute ("SELECT * FROM notes LIMIT ? OFFSET ?", (per_page, (page - 1) * per_page))
+            return cur.fetchall ()
+        
+    def note_by_id (self, note_id) :
+        with self.editor () as cur :
+            cur.execute ("SELECT * FROM notes WHERE id = ?", (note_id,))
+            return cur.fetchone ()
 
     @contextmanager
     def editor (self) -> Generator [Cursor, Any, Any] :
         conn = connect (self.filename)
+        conn.row_factory = Row
         cur = conn.cursor ()
         try :
             yield cur
