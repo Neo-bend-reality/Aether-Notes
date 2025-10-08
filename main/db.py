@@ -12,28 +12,34 @@ class Database :
                          title TEXT UNIQUE NOT NULL,
                          content TEXT DEFAULT '',
                          pinned INTEGER DEFAULT 0,
-                         trashed INTEGER DEFAULT 0,
                          created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                          modified_at TEXT DEFAULT CURRENT_TIMESTAMP
                          )
                         """)
             
-    def add_note (self, title, content, pinned, trashed, created_at, modified_at) -> int :
+    def add_note (self, title, content, pinned, created_at = None, modified_at = None) -> int :
         with self.editor () as cur :
-            cur.execute ("""INSERT INTO notes title, content, pinned, trashed, created_at, modified_at
-                         VALUES (?, ?, ?, ?, ?, ?)""", (title, content, pinned, trashed, created_at, modified_at))
+            cur.execute ("""INSERT INTO notes (title, content, pinned, created_at, modified_at)
+                         VALUES (?, ?, ?, ?, ?)""", (title, content, pinned, created_at, modified_at))
             return cur.lastrowid
         
     def all_notes (self, page, per_page) :
         with self.editor () as cur :
-            cur.execute ("SELECT * FROM notes LIMIT ? OFFSET ?", (per_page, (page - 1) * per_page))
+            cur.execute ("SELECT * FROM notes ORDER BY pinned DESC, created_at DESC LIMIT ? OFFSET ?",
+                          (per_page, (page - 1) * per_page))
             return cur.fetchall ()
         
     def note_by_id (self, note_id) :
         with self.editor () as cur :
             cur.execute ("SELECT * FROM notes WHERE id = ?", (note_id,))
             return cur.fetchone ()
-
+        
+    def note_by_keyword (self, keyword, page, per_page) :
+        with self.editor () as cur :
+            cur.execute ("SELECT * FROM notes WHERE content LIKE ? ORDER BY pinned DESC, created_at DESC LIMIT ? OFFSET ?",
+                         (f"%{keyword}%", per_page, (page - 1) * per_page))
+            return cur.fetchall ()
+ 
     @contextmanager
     def editor (self) -> Generator [Cursor, Any, Any] :
         conn = connect (self.filename)
