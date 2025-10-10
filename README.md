@@ -1,10 +1,18 @@
 # Aether Notes
+---
 
 A lightweight, python - based notes app. Uses `sqlite3` and `flask` to make a small backend, 
 and the tkinter - based frontend (not yet made) handles the logic.
 
+---
+
 ## Documentation
-The project has sphinx - based docs. They can be found in /docs.
+The project has sphinx - based docs that use the `furo` theme. The docs are located in /docs. They are :
+- `index.html` : The home page
+- `db.html` : DB docs 
+- The rest is metadata and other files.
+
+---
 
 ## Usage
 Install Dependencies :
@@ -22,3 +30,4 @@ Finally run the frontend :
 cd main
 python -i frontend.py
 ```
+---

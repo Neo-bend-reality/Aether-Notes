@@ -7,7 +7,7 @@ from datetime import datetime
 
 class Database :
     """Handles DB operations."""
-    def __init__ (self) :
+    def __init__ (self) -> None :
         """Initializes the DB with proper tables."""
         self.filename = "notes.db"
         with self.editor () as cur :
@@ -22,7 +22,7 @@ class Database :
                          )
                         """)
             
-    def add_note (self, title, content, pinned, created_at = None, modified_at = None) -> int :
+    def add_note (self, title : str, content : str, pinned : int, created_at = None, modified_at = None) -> int :
         """
         Takes in parameters to create a new note and returns its id. 
         Note :(API handles Note -> params conversion)"""
@@ -31,20 +31,20 @@ class Database :
                          VALUES (?, ?, ?, ?, ?)""", (title, content, pinned, created_at, modified_at))
             return cur.lastrowid
         
-    def all_notes (self, page, per_page) :
+    def all_notes (self, page : int, per_page : int) -> list [Row] :
         """Returns all the notes in the DB. Has parameters 'page' and 'per_page' to handle pagination."""
         with self.editor () as cur :
             cur.execute ("SELECT * FROM notes ORDER BY pinned DESC, created_at DESC LIMIT ? OFFSET ?",
                           (per_page, (page - 1) * per_page))
             return cur.fetchall ()
         
-    def note_by_id (self, note_id) :
+    def note_by_id (self, note_id : int) -> Row :
         """Returns a note by its id. It is formatted as a raw Row object."""
         with self.editor () as cur :
             cur.execute ("SELECT * FROM notes WHERE id = ?", (note_id,))
             return cur.fetchone ()
         
-    def note_by_keyword (self, keyword, page, per_page) :
+    def note_by_keyword (self, keyword : str, page : int, per_page : int) -> Row :
         """Takes a keyword and returns note that contain a similar version of it in their content.
         Also has 'page' and 'per_page' for pagination."""
         with self.editor () as cur :
@@ -52,7 +52,8 @@ class Database :
                          (f"%{keyword}%", per_page, (page - 1) * per_page))
             return cur.fetchall ()
         
-    def update_note (self, note_id, title : Optional [str], content : Optional [str], pinned : Optional [int]) :
+    def update_note (self, note_id : int, title : Optional [str], 
+                     content : Optional [str], pinned : Optional [int]) -> None :
         """Takes in some optional parameters and updates the note at the given 'note_id' with those parameters."""
         with self.editor () as cur :
             args = []
@@ -64,7 +65,7 @@ class Database :
             now = datetime.now ().isoformat ()
             cur.execute (f"UPDATE notes SET {', '.join (args)}, modified_at = ? WHERE id = ?", tuple (values) + (now, note_id))
 
-    def toggle_pin (self, note_id, pinned : bool) :
+    def toggle_pin (self, note_id : int, pinned : bool) -> None :
         """Toggles the pin of the note at 'note_id'. 
         'pinned' lets it know whether to pin or unpin (the current state of the note is pinned)"""
         with self.editor () as cur :
