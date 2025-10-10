@@ -53,7 +53,7 @@ class Database :
             return cur.fetchall ()
         
     def update_note (self, note_id : int, title : Optional [str], 
-                     content : Optional [str], pinned : Optional [int]) -> None :
+                     content : Optional [str], pinned : Optional [int]) -> bool :
         """Takes in some optional parameters and updates the note at the given 'note_id' with those parameters."""
         with self.editor () as cur :
             args = []
@@ -64,12 +64,20 @@ class Database :
             values = [arg for arg in [title, content, pinned] if arg is not None]
             now = datetime.now ().isoformat ()
             cur.execute (f"UPDATE notes SET {', '.join (args)}, modified_at = ? WHERE id = ?", tuple (values) + (now, note_id))
+            return cur.rowcount > 0
 
-    def toggle_pin (self, note_id : int, pinned : bool) -> None :
+    def toggle_pin (self, note_id : int, pinned : bool) -> bool :
         """Toggles the pin of the note at 'note_id'. 
         'pinned' lets it know whether to pin or unpin (the current state of the note is pinned)"""
         with self.editor () as cur :
             cur.execute ("UPDATE notes SET pinned = ? WHERE id = ?", (1 if pinned else 0, note_id))
+            return cur.rowcount > 0
+
+    def delete_note (self, note_id : int) -> bool :
+        """Deletes a note based on its id ('note_id')"""
+        with self.editor () as cur :
+            cur.execute ("DELETE FROM notes WHERE id = ?", (note_id,))
+            return cur.rowcount > 0
  
     @contextmanager
     def editor (self) -> Generator [Cursor, Any, Any] :

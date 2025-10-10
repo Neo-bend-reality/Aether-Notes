@@ -1,4 +1,5 @@
 /sphinx/build
+zipper.bat
 **/__pycache__
 desktop.ini
 *.py[cod]
