@@ -7,7 +7,7 @@ and the tkinter - based frontend (not yet made) handles the logic.
 ---
 
 ## Documentation
-The project has sphinx - based docs that use the `furo` theme. The docs are located in /docs.zip/docs. <br>
+The project has sphinx - based docs that use the `furo` theme. The docs are located in /docs.zip. <br>
 Make sure to extract the contents first to load the CSS. The docs are :
 - `index.html` : The home page
 - `db.html` : DB docs 
