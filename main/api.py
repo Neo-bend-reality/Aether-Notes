@@ -24,6 +24,8 @@ class NoteManager :
     
     @staticmethod
     def serialize (note : Note) :
+        """Serializes a note object into JSON format - currently returns a dict. 
+        Converts the datetime objects into ISO format."""
         d = asdict (note)
         d ["created_at"] = note.created_at.isoformat ()
         d ["modified_at"] = note.modified_at.isoformat ()

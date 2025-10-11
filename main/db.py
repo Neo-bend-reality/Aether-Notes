@@ -81,6 +81,8 @@ class Database :
  
     @contextmanager
     def editor (self) -> Generator [Cursor, Any, Any] :
+        """Opens a safe connection to the DB, creates a fresh cursor, and closes them both 
+        once the SQL runs or an exception occurs. Only meant to be used internally."""
         conn = connect (self.filename)
         conn.row_factory = Row
         cur = conn.cursor ()

@@ -5,3 +5,6 @@ API
    :members:
    :undoc-members:
    :show-inheritance:
+.. autoclass:: Note
+   :no-signature:
+   :members:

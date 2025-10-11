@@ -2,7 +2,7 @@
 ---
 
 A lightweight, python - based notes app. Uses `sqlite3` and `flask` to make a small backend, 
-and the tkinter - based frontend (not yet made) handles the logic.
+and the tkinter - based frontend (**not yet made**) handles the logic.
 
 ---
 
@@ -11,12 +11,13 @@ The project has sphinx - based docs that use the `furo` theme. The docs are loca
 Make sure to extract the contents first to load the CSS. The docs are :
 - `index.html` : The home page
 - `db.html` : DB docs 
+- `api.html` API docs
 - The rest is metadata and other files.
 
 ---
 
 ## Usage
-Install Dependencies :
+Install Dependencies (if you wish to remake the docs) :
 ```bash
 pip install flask
 pip install sphinx sphinx-rtd-theme
@@ -26,7 +27,7 @@ Clone the repo :
 ```
 git clone https://github.com/Neo-bend-reality/Aether-notes
 ```
-Finally run the frontend :
+~~Finally run the frontend~~ (**not yet made**) :
 ```bash
 cd main
 python -i frontend.py
