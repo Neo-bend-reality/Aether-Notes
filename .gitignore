@@ -1,5 +1,6 @@
 /sphinx/build
 /main/codes.md
+*notes.db
 zipper.bat
 **/__pycache__
 desktop.ini

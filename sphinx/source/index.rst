@@ -11,6 +11,7 @@ Aether Notes documentation
    :maxdepth: 2
    :caption: Contents:
 
-   modules
+   db
+   api
 
 Welcome to Aether Notes' documentation!
