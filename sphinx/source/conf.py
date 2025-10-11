@@ -33,9 +33,8 @@ html_theme_options = {
 }
 
 html_dark_mode = True
-autodoc_dataclass_signature = False
 
 import sys
-import os
+import os 
 
 sys.path.insert (0, os.path.abspath ("../../main"))

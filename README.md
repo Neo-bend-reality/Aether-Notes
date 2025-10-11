@@ -17,9 +17,12 @@ Make sure to extract the contents first to load the CSS. The docs are :
 ---
 
 ## Usage
-Install Dependencies (if you wish to remake the docs) :
+Install Dependencies  :
 ```bash
 pip install flask
+```
+If you wish to remake the docs :
+```bash
 pip install sphinx sphinx-rtd-theme
 pip install furo
 ```

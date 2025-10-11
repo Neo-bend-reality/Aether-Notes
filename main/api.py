@@ -17,7 +17,7 @@ class Note :
 class NoteManager :
     @staticmethod
     def to_note (row : Row) :
-        """Takes in a sqlite3.Row object and converts it to a Note dataclass"""
+        """Takes in a sqlite3.Row object and converts it to a Note dataclass."""
         return Note (
             row ["note_id"], row ["title"], row ["content"], bool (row ["pinned"]),
             datetime.fromisoformat (row ["created_at"]), datetime.fromisoformat (row ["modified_at"]))
