@@ -29,26 +29,56 @@ class NoteManager :
         d = asdict (note)
         d ["created_at"] = note.created_at.isoformat ()
         d ["modified_at"] = note.modified_at.isoformat ()
+        return d
 
 app = Flask (__name__)
 db = Database ()
 
 @app.route ("/", methods = ["GET"])
 def all_notes (): 
-    """Return all notes in the DB. Needs a json payload of type dict,
-      with keys page and per_pge for pagination (default to 1 and 10 respectively)"""
-    
-    data : dict = request.get_json (force = True)
-    notes = db.all_notes (data.get ("page", 1), data.get ("per_page", 10))
-    notes = [NoteManager.to_note (note) for note in notes]
-    return jsonify ([NoteManager.serialize (note) for note in notes]), 200
+    """Return all notes in the DB. Gives them as a list with status code 200. 
+    Use search queries to pass the parameters. Example requests :-
+    http://localhost:6000/?page=1&per_page=10
+    http://localhost:6000/?page=2&per_page=5
+    """
 
-@app.route ("/<int:id>", methods = ["GET"])
-def note_by_id (id : int) :
-    """Returns a note by its id, which will be found in the URL as localhost:port/id."""
-    note = NoteManager.serialize (db.note_by_id (id))
-    if note is not None : return jsonify (note), 200
-    else : return jsonify ({"message" : "Invalid ID"}), 204
+    page = max (1, int (request.args.get ("page", 1)))
+    per_page = max (1, int (request.args.get ("per_page", 10)))
+    notes = db.all_notes (page, per_page)
+    if notes :
+        notes = [NoteManager.to_note (note) for note in notes]
+        return jsonify ([NoteManager.serialize (note) for note in notes]), 200
+    return jsonify ([]), 200
+
+@app.route ("/search/<int:note_id>", methods = ["GET"])
+def note_by_id (note_id : int) :
+    """Returns a note by its id. Use the URL to pass the ID.
+    It will return 200 for success and 404 if the note isn't found. Example requests :
+    http://localhost:6000/search/1
+    http://localhost:6000/search/42"""
+
+    note = db.note_by_id (note_id)
+    if note : 
+        return jsonify (NoteManager.serialize (NoteManager.to_note (note))), 200
+    return jsonify ({"message" : "Note not found"}), 404
+
+@app.route ("/search/", methods = ["GET"])
+def note_by_keyword () :
+    """Returns notes that have the given keyword in their content. Use search queries to pass parameters. Exaple requests :-
+    http://localhost:6000/search/?keyword=note
+    http://localhost:6000/search/?keyword=todo&page=1&per_page=5"""
+    
+    keyword = request.args.get ("keyword")
+    if not keyword : 
+        return jsonify ({"message" : "Keyword required"}), 400
+    page = max (1, int (request.args.get ("page", 1)))
+    per_page = max (1, int (request.args.get ("per_page", 10)))
+    notes = db.note_by_keyword (keyword, page, per_page)
+
+    if notes : 
+        notes = [NoteManager.to_note (note) for note in notes]
+        return jsonify ([NoteManager.serialize (note) for note in notes]), 200
+    return jsonify ([]), 200
 
 if __name__ == "__main__" :
     app.run (port = 6000, debug = True)
