@@ -34,7 +34,7 @@ app = Flask (__name__)
 db = Database ()
 
 @app.route ("/", methods = ["GET"])
-def all_notes () : 
+def all_notes (): 
     """Return all notes in the DB. Needs a json payload of type dict,
       with keys page and per_pge for pagination (default to 1 and 10 respectively)"""
     
@@ -42,6 +42,13 @@ def all_notes () :
     notes = db.all_notes (data.get ("page", 1), data.get ("per_page", 10))
     notes = [NoteManager.to_note (note) for note in notes]
     return jsonify ([NoteManager.serialize (note) for note in notes]), 200
+
+@app.route ("/<int:id>", methods = ["GET"])
+def note_by_id (id : int) :
+    """Returns a note by its id, which will be found in the URL as localhost:port/id."""
+    note = NoteManager.serialize (db.note_by_id (id))
+    if note is not None : return jsonify (note), 200
+    else : return jsonify ({"message" : "Invalid ID"}), 204
 
 if __name__ == "__main__" :
     app.run (port = 6000, debug = True)

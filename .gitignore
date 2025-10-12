@@ -1,7 +1,8 @@
 /sphinx/build
 /main/codes.md
+*.gitkeep
 *notes.db
-zipper.bat
+docs.bat
 **/__pycache__
 desktop.ini
 *.py[cod]
