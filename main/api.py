@@ -34,7 +34,7 @@ class NoteManager :
 app = Flask (__name__)
 db = Database ()
 
-@app.route ("/", methods = ["GET"])
+@app.route ("/search/", methods = ["GET"])
 def all_notes (): 
     """Return all notes in the DB. Gives them as a list with status code 200. 
     Use search queries to pass the parameters. Example requests :-
@@ -79,6 +79,16 @@ def note_by_keyword () :
         notes = [NoteManager.to_note (note) for note in notes]
         return jsonify ([NoteManager.serialize (note) for note in notes]), 200
     return jsonify ([]), 200
+
+@app.route ("/new", methods = ["POST"])
+def add_note () :
+    """Add a note to the DB. Needs a JSON payload with the required parameters."""
+    data = request.get_json ()
+    return jsonify (
+        db.add_note (
+            data ["title"], data ["content"], int (data ["pinned"]),
+            datetime.isoformat (data ["created_at"]), datetime.isoformat (data ["modified_at_at"])
+        )), 201
 
 if __name__ == "__main__" :
     app.run (port = 6000, debug = True)

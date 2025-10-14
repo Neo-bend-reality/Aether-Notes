@@ -25,7 +25,7 @@ class Database :
     def add_note (self, title : str, content : str, pinned : int, created_at = None, modified_at = None) -> int :
         """
         Takes in parameters to create a new note and returns its id. 
-        Note :(API handles Note -> params conversion)"""
+        Note :(API handles params conversion)"""
         with self.editor () as cur :
             cur.execute ("""INSERT INTO notes (title, content, pinned, created_at, modified_at)
                          VALUES (?, ?, ?, ?, ?)""", (title, content, pinned, created_at, modified_at))
